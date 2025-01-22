@@ -1,0 +1,71 @@
+version: '3.8'
+
+services:
+  app:
+    image: your-registry/advsac-app:prod
+    build: 
+      context: .
+      dockerfile: Dockerfile.prod
+    restart: unless-stopped
+    networks:
+      - advsac-network
+    environment:
+      - NODE_ENV=production
+      - DATABASE_URL=postgres://postgres:${DB_PASSWORD}@postgres:5432/advsac
+      - REDIS_URL=redis://redis:6379
+      - PORT=3000
+    depends_on:
+      - postgres
+      - redis
+
+  postgres:
+    image: postgres:15-alpine
+    restart: unless-stopped
+    networks:
+      - advsac-network
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_DB=advsac
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    networks:
+      - advsac-network
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+  nginx:
+    image: nginx:1.25-alpine
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    networks:
+      - advsac-network
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ./certbot/www:/var/www/certbot
+      - ./certbot/conf:/etc/nginx/ssl
+    depends_on:
+      - app
+
+volumes:
+  postgres_data:
+  redis_data:
+
+networks:
+  advsac-network:
+    driver: bridge

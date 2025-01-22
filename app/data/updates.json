@@ -1,0 +1,92 @@
+{
+  "/* DOCUMENTAÇÃO */": {
+    "descrição": "Arquivo de dados para novidades e atualizações do sistema",
+    "estrutura": {
+      "news": "Array de notificações recentes",
+      "updates": "Array de versões do sistema"
+    },
+    "tipos_de_notificação": {
+      "update": "Nova funcionalidade ou melhoria",
+      "tip": "Dica de uso do sistema",
+      "announcement": "Anúncio ou comunicado importante"
+    },
+    "ícones_disponíveis": {
+      "Zap": "Atualizações de funcionalidades",
+      "Star": "Dicas e recursos destacados",
+      "Clock": "Anúncios de tempo/manutenção",
+      "Layers": "Versões do sistema",
+      "Bot": "Recursos de IA/automação"
+    },
+    "cores_disponíveis": {
+      "azul": {
+        "iconColor": "text-blue-500",
+        "iconBg": "bg-blue-500/10"
+      },
+      "verde": {
+        "iconColor": "text-green-500",
+        "iconBg": "bg-green-500/10"
+      },
+      "roxo": {
+        "iconColor": "text-purple-500",
+        "iconBg": "bg-purple-500/10"
+      },
+      "amarelo": {
+        "iconColor": "text-yellow-500",
+        "iconBg": "bg-yellow-500/10"
+      }
+    }
+  },
+  "news": [
+    {
+      "title": "Nova Funcionalidade: Exportação em Lote",
+      "description": "Agora você pode exportar múltiplos documentos de uma vez só, economizando tempo no seu dia a dia.",
+      "date": "14 Jan, 2025",
+      "type": "update",
+      "icon": "Zap"
+    },
+    {
+      "title": "Dica: Atalhos do Teclado",
+      "description": "Use Ctrl+K para abrir a busca rápida e navegar mais rápido pelo sistema.",
+      "date": "13 Jan, 2025",
+      "type": "tip",
+      "icon": "Star"
+    },
+    {
+      "title": "Manutenção Programada",
+      "description": "Sistema ficará indisponível para atualizações no dia 20/01 das 02h às 04h.",
+      "date": "12 Jan, 2025",
+      "type": "announcement",
+      "icon": "Clock"
+    }
+  ],
+  "updates": [
+    {
+      "title": "Versão 1.0.0",
+      "description": "Sistema completo de atendimento, CRM e fluxos de trabalho",
+      "icon": "Layers",
+      "iconColor": "text-blue-500",
+      "iconBg": "bg-blue-500/10",
+      "features": [
+        "Sistema completo de atendimento ao cliente",
+        "CRM especializado para escritórios",
+        "Construtor visual de fluxos"
+      ],
+      "href": "/documentacao/1.0.0",
+      "status": "current"
+    },
+    {
+      "title": "Versão 1.1.0",
+      "description": "Em breve: IA para documentos e atendimento",
+      "icon": "Bot",
+      "iconColor": "text-purple-500",
+      "iconBg": "bg-purple-500/10",
+      "features": [
+        "Chatbot inteligente para atendimento 24/7",
+        "Geração de documentos jurídicos por IA",
+        "Análise automática de documentos"
+      ],
+      "href": "/documentacao/1.1.0",
+      "status": "coming"
+    }
+  ]
+}

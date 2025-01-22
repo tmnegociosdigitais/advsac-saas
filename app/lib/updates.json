@@ -1,0 +1,48 @@
+{
+  "news": [
+    {
+      "title": "Nova Funcionalidade",
+      "description": "Adicionamos suporte para análise de imagens com Deep Learning",
+      "type": "update",
+      "icon": "Zap",
+      "date": "2024-01-14"
+    },
+    {
+      "title": "Dica do Dia",
+      "description": "Use tags específicas para melhorar os resultados da busca",
+      "type": "tip",
+      "icon": "Star",
+      "date": "2024-01-14"
+    }
+  ],
+  "updates": [
+    {
+      "title": "Versão Atual",
+      "description": "Sistema de Análise de Imagens com IA",
+      "icon": "Brain",
+      "iconColor": "text-blue-500",
+      "iconBg": "bg-blue-500/10",
+      "features": [
+        "Análise de imagens com Deep Learning",
+        "Interface intuitiva",
+        "Resultados em tempo real"
+      ],
+      "href": "/docs/current",
+      "status": "current"
+    },
+    {
+      "title": "Próxima Versão",
+      "description": "Sistema completo de atendimento, CRM e fluxos de trabalho",
+      "icon": "Building2",
+      "iconColor": "text-emerald-500",
+      "iconBg": "bg-emerald-500/10",
+      "features": [
+        "Gestão de atendimentos e tickets",
+        "CRM especializado para advocacia",
+        "Construtor de fluxos de trabalho"
+      ],
+      "href": "/docs/next",
+      "status": "coming"
+    }
+  ]
+}

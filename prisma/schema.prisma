@@ -1,0 +1,185 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Message {
+  id        String   @id @default(cuid())
+  from      String
+  to        String?
+  content   String
+  timestamp DateTime @default(now())
+  status    String   // received, sent
+  contactId String?
+  ticketId  String?
+  contact   Contact? @relation(fields: [contactId], references: [id])
+  ticket    Ticket?  @relation(fields: [ticketId], references: [id])
+}
+
+model Contact {
+  id        String   @id @default(cuid())
+  phone     String   @unique
+  name      String?
+  tags      Tag[]
+  messages  Message[]
+  tickets   Ticket[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Tag {
+  id        String   @id @default(cuid())
+  name      String   @unique
+  contacts  Contact[]
+  tickets   Ticket[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String    @unique
+  password      String
+  image         String?
+  role          Role      @relation(fields: [roleId], references: [id])
+  roleId        String
+  department    Department? @relation(fields: [departmentId], references: [id])
+  departmentId  String?
+  isActive      Boolean   @default(true)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  assignedTickets Ticket[] @relation("AssignedTo")
+  createdTickets Ticket[] @relation("CreatedBy")
+  queues        Queue[]   @relation("QueueAgents")
+}
+
+model Role {
+  id          String    @id @default(cuid())
+  name        String    @unique
+  users       User[]
+  permissions String    // JSON string of permissions
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+model Department {
+  id          String    @id @default(cuid())
+  name        String    @unique
+  users       User[]
+  parentId    String?
+  parent      Department? @relation("DepartmentHierarchy", fields: [parentId], references: [id])
+  children    Department[] @relation("DepartmentHierarchy")
+  queues      Queue[]
+  clients     Client[]
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+model Ticket {
+  id          String    @id @default(cuid())
+  status      TicketStatus
+  priority    Priority
+  contact     Contact   @relation(fields: [contactId], references: [id])
+  contactId   String
+  assignedTo  User?     @relation("AssignedTo", fields: [assignedToId], references: [id])
+  assignedToId String?
+  createdBy   User      @relation("CreatedBy", fields: [createdById], references: [id])
+  createdById String
+  queue       Queue     @relation(fields: [queueId], references: [id])
+  queueId     String
+  messages    Message[]
+  tags        Tag[]
+  kanbanColumn KanbanColumn? @relation("TicketKanbanColumn", fields: [kanbanColumnId], references: [id])
+  kanbanColumnId String?
+  crmStage    String?   // Para estágios personalizados do funil
+  crmNotes    String?   // Notas do CRM
+  crmValue    Float?    // Valor potencial do ticket
+  crmPriority Int       @default(0) // Prioridade no quadro Kanban
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  closedAt    DateTime?
+}
+
+model Queue {
+  id          String    @id @default(cuid())
+  name        String
+  department  Department @relation(fields: [departmentId], references: [id])
+  departmentId String
+  agents      User[]    @relation("QueueAgents")
+  tickets     Ticket[]
+  isActive    Boolean   @default(true)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+model Plan {
+  id            String    @id @default(cuid())
+  name          String    @unique
+  description   String?
+  maxQueues     Int       @default(1)
+  maxUsers      Int       @default(1)
+  maxKanbanColumns Int    @default(3)
+  canCustomizeKanban Boolean @default(false)
+  price         Float
+  clients       Client[]
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+}
+
+model Client {
+  id            String    @id @default(cuid())
+  name          String
+  email         String    @unique
+  phone         String?
+  plan          Plan      @relation(fields: [planId], references: [id])
+  planId        String
+  isActive      Boolean   @default(true)
+  kanbanConfig  KanbanConfig?
+  departments   Department[]
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+}
+
+model KanbanConfig {
+  id            String    @id @default(cuid())
+  client        Client    @relation(fields: [clientId], references: [id])
+  clientId      String    @unique
+  columns       KanbanColumn[]
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+}
+
+model KanbanColumn {
+  id            String    @id @default(cuid())
+  name          String
+  color         String    @default("#000000")
+  order         Int
+  config        KanbanConfig @relation(fields: [configId], references: [id])
+  configId      String
+  tickets       Ticket[]  @relation("TicketKanbanColumn")
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  @@unique([configId, order])
+}
+
+enum TicketStatus {
+  WAITING
+  OPEN
+  PENDING
+  RESOLVED
+  CLOSED
+  TRANSFERRED
+}
+
+enum Priority {
+  LOW
+  MEDIUM
+  HIGH
+  URGENT
+}
